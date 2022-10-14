@@ -5,6 +5,7 @@ const bookRoutes = require('./routes/book.routes');
 
 const app = express();
 const db = require('./db');
+const cron = require('./cron/cron');
 
 const PORT = process.env.PORT || 3000;
 
