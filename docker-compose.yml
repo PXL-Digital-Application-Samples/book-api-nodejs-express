@@ -1,0 +1,23 @@
+version: '3.6'
+services:
+  backend:
+    build: .
+    restart: always
+    environment:
+      - DBURL=database
+      - DBUSER=root
+      - DBPASSWORD=password
+      - DBDATABASE=pxl
+      - DBPORT=3306
+    ports:
+      - 80:3000
+    depends_on:
+      - database
+  database:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=pxl
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+      - 3306:3306
+      

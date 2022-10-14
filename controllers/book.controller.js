@@ -1,35 +1,41 @@
 const Book = require("../models/book.model")
 
 exports.getBooks = async(req, res) =>{
-    Book.find()
-        .then(books => res.json(books))
-        .catch(err => res.status(400).json('Error: ' + err));
+   Book.findAll({}).then((err, books) => {
+    if(err){
+        res.send(err);
+    }
+    res.json(books);
+   });
 }
 
-exports.createBook = (req, res) => {
-    const newBook = new Book(req.body);
+exports.createBook = async (req, res) => {
+    const newBook = Book.build({
+        title: req.body.title,
+        author: req.body.author,
+        isbn: req.body.isbn,
+        genre: req.body.genre
+    });
 
-    newBook.save()
-        .then((book) => res.json(book))
-        .catch(err => res.status(400).json('Error: ' + err));
+    const savedBook = await newBook.save();
+    res.json(savedBook);
 }
 
 exports.deleteBook = (req, res) => {
-    Book.findByIdAndDelete(req.params.id)
-        .then(() => res.json({deletedId: req.params.id, message: "success"}))
-        .catch(err => res.status(400).json('Error: ' + err));
+   Book.findByPk(req.params.id)
+        .then(book => book.destroy().then(() => res.json({success: true})));
 }
 
 exports.updateBook = (req, res) => {
-    Book.findById(req.params.id || req.body._id)
+   Book.findByPk(req.params.id || req.body._id)
         .then(book => {
-           book.title = req.body.title;
-           book.author = req.body.author;
-           book.isbn = req.body.isbn;
-           book.genre = req.body.genre;
+            book.set({
+                title: req.body.title,
+                author: req.body.author,
+                isbn: req.body.isbn,
+                genre: req.body.genre
+            });
 
-           book.save()
-               .then((book) => res.json(book))
-        })
-        .catch(err => res.status(400).json('Error: ' + err));
+            book.save().then(book => res.json(book));
+        });
 }

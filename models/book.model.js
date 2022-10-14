@@ -1,13 +1,32 @@
-const mongoose = require("mongoose");
+const Sequelize = require('sequelize');
+const sequelize = require('./../db');
 
-const bookSchema = new mongoose.Schema({
-    title: {type: String},
-    author: {type: String},
-    isbn: {type: String},
-    genre: {type: String}
+const Book = sequelize.define('book', {
+    title: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    author: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    isbn: {
+        type: Sequelize.STRING,
+        allowNull: true,
+    },
+    genre: {
+        type: Sequelize.STRING,
+        allowNull: true,
+    },
+    _id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        primaryKey: true
+    }
 });
-const Book = mongoose.model(
-    "Book", bookSchema
+
+sequelize.sync().then(() => 
+    console.log('Book table created successfully')
 );
 
 module.exports = Book;
